@@ -56,7 +56,7 @@ export function Hero() {
             untouched. */}
         <div className="pointer-events-auto mt-9 flex w-full flex-row items-center justify-center gap-3 sm:mt-11 sm:w-auto sm:gap-4">
           {/* CoolButton renders an <a> that defaults to target="_blank". */}
-          <CoolButton href="#contact" target="_self" className="shrink-0">
+          <CoolButton href="/tell-us" target="_self" className="shrink-0">
             Bring us an idea
           </CoolButton>
 
