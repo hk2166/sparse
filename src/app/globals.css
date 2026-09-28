@@ -213,6 +213,15 @@
   html {
     @apply font-sans;
   }
+  /* Selection reads as ours rather than as the browser's default blue. The
+     bare ::selection is equivalent to *::selection, so it covers every
+     element. --primary and --primary-foreground are already a contrast pair
+     and both flip under .dark, so this re-themes with everything else instead
+     of becoming a second place colours are defined. */
+  ::selection {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
 }
 
 /* AnimatedThemeToggler drives the reveal with a WAAPI clip-path animation on
