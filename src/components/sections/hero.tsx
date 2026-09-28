@@ -30,15 +30,20 @@ export function Hero() {
       />
 
       {/*
-        Hero sits on --card, the section below on --background. Landing this
-        fade on --background rather than --card means it resolves both seams at
-        once: the globe's crop line and the surface change. By the section's
-        bottom edge the two colours are already identical, so there is nothing
-        left to see.
+        This fade resolves the globe's crop line into the hero's OWN surface,
+        --card, and nothing else. It used to land on --background because the
+        section below was always the villain band; the moment that section was
+        parked the next one was --card, so the fade ended on one colour and the
+        page continued in another — a hard line right under the globe.
+
+        Ending on the hero's own surface makes this independent of whatever
+        comes next. The band change to the following section is then carried by
+        the surface change alone, which is exactly how every other boundary on
+        this page already works.
       */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[46%] bg-[linear-gradient(to_bottom,transparent_0%,color-mix(in_oklab,var(--background),transparent_62%)_38%,color-mix(in_oklab,var(--background),transparent_18%)_70%,var(--background)_96%)]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[46%] bg-[linear-gradient(to_bottom,transparent_0%,color-mix(in_oklab,var(--card),transparent_62%)_38%,color-mix(in_oklab,var(--card),transparent_18%)_70%,var(--card)_96%)]"
       />
 
       {/* pointer-events-none on the wrapper lets clicks in the gaps reach the

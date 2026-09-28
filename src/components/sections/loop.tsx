@@ -17,9 +17,10 @@ import { LoopSteps } from "@/components/loop/loop-steps";
  */
 export function Loop() {
   return (
-    // Villain is bg-background; coming back to bg-card is what separates the
-    // bands, so there is no top border here either. It also leaves §5 a
-    // surface to return to, and the hairline panel below reads crisper on card.
+    // bg-card, with §5 below on bg-background — the surface change is what
+    // separates the bands, so there is no top border. While §3 is parked this
+    // section follows the hero, which is also bg-card; the hero's bottom fade
+    // resolves to its own surface, so the two meet with nothing to see.
     //
     // id="method" makes the header's Method link live — it had no target.
     // scroll-mt clears the fixed header, which is h-16 sm:h-18.
