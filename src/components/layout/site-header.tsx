@@ -8,7 +8,6 @@ import { ChevronRightIcon, MenuIcon, XIcon } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import { useScrolled } from "@/hooks/use-scrolled";
-import { fireSideCannons } from "@/lib/side-cannons";
 import { cn } from "@/lib/utils";
 
 /**
@@ -24,11 +23,6 @@ const LINKS = [
 ];
 
 const CTA = { label: "Tell us what hurts", href: "/tell-us" };
-
-// Decorative only: a failed chunk load shouldn't surface as an unhandled rejection.
-const celebrate = () => {
-  fireSideCannons().catch(() => {});
-};
 
 /**
  * Pill CTA: animated gradient hairline border, gradient label, nudging chevron.
@@ -137,7 +131,6 @@ export function SiteHeader() {
           >
             <GradientPillLink
               href={CTA.href}
-              onClick={celebrate}
               className="min-h-10 text-sm"
             >
               {CTA.label}
@@ -187,10 +180,7 @@ export function SiteHeader() {
             {showCta ? (
               <GradientPillLink
                 href={CTA.href}
-                onClick={() => {
-                  setOpen(false);
-                  celebrate();
-                }}
+                onClick={() => setOpen(false)}
                 className="mt-3 min-h-11 text-base"
               >
                 {CTA.label}

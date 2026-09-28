@@ -1,4 +1,3 @@
-import { getSql, isDbConfigured } from "@/lib/db";
 import { IDEA_LIMITS } from "@/lib/idea-limits";
 
 export type Idea = {
@@ -38,7 +37,7 @@ export type NewIdea = {
   email: string | null;
 };
 
-// Code points, not UTF-16 units, so the count matches Postgres char_length().
+// Code points, not UTF-16 units, so the count matches what the author typed.
 const length = (value: string) => [...value].length;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -106,44 +105,55 @@ export function parseIdea(
   };
 }
 
-export async function createIdea(idea: NewIdea) {
-  const sql = getSql();
+/**
+ * Placeholder store while the front end is being built. Everything lives in
+ * module memory: it resets on restart and is not shared between server
+ * instances, which is fine for clicking through the UI and nothing else.
+ *
+ * Swapping in the real backend means reimplementing just `createIdea` and
+ * `getIdeas` — the types, validation and both call sites stay as they are.
+ * The intended table is in db/schema.sql.
+ */
+const store: Idea[] = [
+  {
+    id: "seed-3",
+    title: "Invoices that chase themselves",
+    details:
+      "Every month I export a spreadsheet, cross-check who has paid, and send the same three emails. It is an hour of work that knows exactly what it wants to do.",
+    name: "Priya",
+    createdAt: new Date("2026-09-24T09:20:00Z"),
+  },
+  {
+    id: "seed-2",
+    title: "One place for handover notes",
+    details:
+      "Context for a shift lives in someone's head, a WhatsApp thread, and a notebook. The next person starts by reconstructing it.",
+    name: null,
+    createdAt: new Date("2026-09-21T16:05:00Z"),
+  },
+  {
+    id: "seed-1",
+    title: "Stop re-keying delivery challans",
+    details:
+      "The same numbers get typed into the portal, the ledger, and then a PDF for the client. Three chances to get a digit wrong.",
+    name: "Arun",
+    createdAt: new Date("2026-09-18T11:40:00Z"),
+  },
+];
 
-  await sql`
-    insert into ideas (title, details, author_name, author_email)
-    values (${idea.title}, ${idea.details}, ${idea.name}, ${idea.email})
-  `;
+export async function createIdea(idea: NewIdea) {
+  // The real one will persist author_email; here it is deliberately dropped,
+  // so a placeholder never holds a contact detail it has no use for.
+  store.unshift({
+    id: `local-${Date.now()}`,
+    title: idea.title,
+    details: idea.details,
+    name: idea.name,
+    createdAt: new Date(),
+  });
 }
 
-/** Public columns only; author_email never leaves the database. */
+/** Public fields only; an author's email never reaches this list. */
 export async function getIdeas(limit = 50): Promise<IdeasResult> {
-  if (!isDbConfigured()) return { status: "not-configured" };
-
-  try {
-    const rows = await getSql()<
-      {
-        id: string;
-        title: string;
-        details: string;
-        name: string | null;
-        createdAt: Date;
-      }[]
-    >`
-      select
-        id::text,
-        title,
-        details,
-        author_name as name,
-        created_at as "createdAt"
-      from ideas
-      where not hidden
-      order by created_at desc
-      limit ${limit}
-    `;
-
-    return { status: "ok", ideas: [...rows] };
-  } catch (error) {
-    console.error("Could not load ideas", error);
-    return { status: "error" };
-  }
+  return { status: "ok", ideas: store.slice(0, limit) };
 }

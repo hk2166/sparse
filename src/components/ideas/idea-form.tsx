@@ -2,12 +2,12 @@
 
 import { CheckIcon } from "lucide-react";
 import Link from "next/link";
-import { useActionState, useEffect, type ReactNode } from "react";
+import { useActionState, useEffect, useRef, type ReactNode } from "react";
 
 import { submitIdea } from "@/app/tell-us/actions";
+import { Confetti, type ConfettiRef } from "@/components/ui/confetti";
 import { IDEA_LIMITS } from "@/lib/idea-limits";
 import type { IdeaFormState } from "@/lib/ideas";
-import { fireSideCannons } from "@/lib/side-cannons";
 import { cn } from "@/lib/utils";
 
 const initialState: IdeaFormState = { status: "idle" };
@@ -56,6 +56,7 @@ export function IdeaForm() {
     submitIdea,
     initialState,
   );
+  const confettiRef = useRef<ConfettiRef>(null);
 
   const errors = state.status === "error" ? (state.errors ?? {}) : {};
   // React clears uncontrolled fields after every action, so on a failed post
@@ -75,7 +76,7 @@ export function IdeaForm() {
 
   // A saved idea is the one moment on this page worth a flourish.
   useEffect(() => {
-    if (state.status === "success") fireSideCannons().catch(() => {});
+    if (state.status === "success") void confettiRef.current?.fire();
   }, [state]);
 
   return (
@@ -84,6 +85,13 @@ export function IdeaForm() {
       aria-busy={pending}
       className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-8 dark:shadow-[inset_0_1px_0_0_color-mix(in_oklab,var(--foreground),transparent_92%)]"
     >
+      <Confetti
+        ref={confettiRef}
+        manualstart
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-50 size-full"
+      />
+
       <Field
         id="idea-title"
         label="Your idea"

@@ -1,4 +1,4 @@
-import { AnimatedGradientText } from "@/registry/magicui/animated-gradient-text";
+import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 
 export function AnimatedGradientTextDemo() {
   return (
