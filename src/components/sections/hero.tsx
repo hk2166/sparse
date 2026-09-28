@@ -2,6 +2,7 @@ import { HeroGlobe } from "@/components/hero/hero-globe";
 import { HeroHeadline } from "@/components/hero/hero-headline";
 import { HexagonPattern } from "@/components/ui/hexagon-pattern";
 import { CoolButton } from "@/components/wensity/cool-button";
+import { Lead } from "@/components/wensity/typography";
 
 export function Hero() {
   return (
@@ -45,10 +46,10 @@ export function Hero() {
         */}
         <HeroHeadline />
 
-        <p className="pointer-events-auto mt-7 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:mt-9 sm:text-lg">
+        <Lead className="pointer-events-auto mt-7 max-w-2xl sm:mt-9">
           TheSparseLabs is a small product lab. We find what quietly ruins a
           workday and build the smallest thing that stops it.
-        </p>
+        </Lead>
 
         {/* One row at every width. They were stacked and full-width on mobile,
             which is what stretched the CoolButton's orbit border across the

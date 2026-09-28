@@ -36,6 +36,19 @@ export interface LiquidMultimodalInputProps {
   onModelChange?: (model: LiquidModel) => void;
   /** Hide the built-in model selector (e.g. when the host app owns model state) */
   hideModel?: boolean;
+  /**
+   * Hide the send button and let Enter insert a newline. Use when the box is a
+   * field inside a larger form that owns its own submit button.
+   */
+  hideSubmit?: boolean;
+  /**
+   * Spread onto the textarea, so a host form can give it a name, an id and the
+   * usual validation and aria attributes. Applied last, so it wins.
+   */
+  textareaProps?: Omit<
+    React.ComponentPropsWithoutRef<"textarea">,
+    "value" | "onChange" | "ref" | "style"
+  >;
   /** Optional className for the outer container */
   className?: string;
 }
@@ -53,6 +66,8 @@ export function LiquidMultimodalInput({
   onChange,
   onModelChange,
   hideModel = false,
+  hideSubmit = false,
+  textareaProps,
   className,
 }: LiquidMultimodalInputProps) {
   const [value, setValue] = React.useState("");
@@ -97,6 +112,8 @@ export function LiquidMultimodalInput({
   }
 
   function handleKey(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    // Without a send button of its own, Enter belongs to the textarea.
+    if (hideSubmit) return;
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       submit();
@@ -138,7 +155,7 @@ export function LiquidMultimodalInput({
           transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
           style={{
             background:
-              "conic-gradient(from 0deg, #cd1c18, #ffa896, #cd1c18, #9b1313, #cd1c18)",
+              "conic-gradient(from 0deg, var(--primary), color-mix(in oklab, var(--primary), white 45%), var(--primary), color-mix(in oklab, var(--primary), black 30%), var(--primary))",
             willChange: "opacity",
           }}
         />
@@ -148,15 +165,15 @@ export function LiquidMultimodalInput({
           className={cn(
             "group relative isolate flex w-full flex-col gap-2 overflow-hidden rounded-[28px] p-3 transition-all duration-150 ease-in-out",
             // Light Mode Styles
-            "border border-black/[0.08] bg-[radial-gradient(ellipse_90%_70%_at_50%_-10%,#ffffff_0%,#f4f4f5_72%)] text-base",
+            "border border-primary/20 bg-[radial-gradient(ellipse_90%_70%_at_50%_-10%,#ffffff_0%,#f4f4f5_72%)] text-base",
             "shadow-[0_1px_2px_rgba(0,0,0,.06),0_8px_24px_-12px_rgba(0,0,0,.08)]",
-            "hover:border-black/[0.12] focus-within:border-black/[0.14]",
+            "hover:border-primary/35 focus-within:border-primary/55",
+            "has-[textarea[aria-invalid=true]]:border-destructive",
             // Dark Mode Styles
-            "dark:border-white/[0.06] dark:bg-[radial-gradient(ellipse_90%_70%_at_50%_-10%,#15151b_0%,#0a0a0b_72%)]",
+            "dark:bg-[radial-gradient(ellipse_90%_70%_at_50%_-10%,#15151b_0%,#0a0a0b_72%)]",
             "dark:shadow-[0_1px_2px_rgba(0,0,0,.4),0_8px_24px_-12px_rgba(0,0,0,.6)]",
-            "dark:hover:border-white/[0.12] dark:focus-within:border-white/[0.16]",
             // Active Drop Override
-            dragOver && "border-chili-500/45 dark:border-chili-500/45"
+            dragOver && "border-primary/45"
           )}
         >
           <div
@@ -183,7 +200,7 @@ export function LiquidMultimodalInput({
               WebkitMaskComposite: "xor",
               maskComposite: "exclude",
               background:
-                "conic-gradient(from var(--lmi-angle, 0deg), transparent 65%, rgba(205,28,24,0.6) 80%, #ffa896 95%, transparent 100%)",
+                "conic-gradient(from var(--lmi-angle, 0deg), transparent 65%, color-mix(in oklab, var(--primary), transparent 40%) 80%, color-mix(in oklab, var(--primary), white 45%) 95%, transparent 100%)",
             }}
           />
           <style>{`
@@ -228,7 +245,7 @@ export function LiquidMultimodalInput({
                           <button
                             type="button"
                             onClick={() => window.open(f.preview, "_blank")}
-                            className="relative h-20 w-20 overflow-hidden rounded-xl border border-black/5 shadow-sm dark:border-white/10 cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-chili-500/50"
+                            className="relative h-20 w-20 overflow-hidden rounded-xl border border-black/5 shadow-sm dark:border-white/10 cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-primary/50"
                           >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
@@ -243,9 +260,9 @@ export function LiquidMultimodalInput({
                           <div className="flex h-14 max-w-[160px] items-center gap-2 rounded-xl border border-black/5 bg-black/5 px-3 shadow-sm dark:border-white/10 dark:bg-white/5">
                             <IconFileDescription
                               size={20}
-                              className="shrink-0 text-slate-400 dark:text-muted-foreground"
+                              className="shrink-0 text-muted-foreground"
                             />
-                            <span className="truncate text-xs font-medium text-slate-700 dark:text-foreground">
+                            <span className="truncate text-xs font-medium text-foreground">
                               {f.file.name}
                             </span>
                           </div>
@@ -260,9 +277,8 @@ export function LiquidMultimodalInput({
                           }}
                           aria-label={`Remove ${f.file.name}`}
                           className={cn(
-                            "absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-slate-800 text-white shadow-md transition-all duration-200",
-                            "opacity-70 hover:bg-chili-500 hover:opacity-100 focus:opacity-100",
-                            "dark:bg-slate-700 dark:hover:bg-chili-500"
+                            "absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-foreground text-background shadow-md transition-all duration-200",
+                            "opacity-70 hover:bg-primary hover:text-primary-foreground hover:opacity-100 focus:opacity-100"
                           )}
                         >
                           <IconX size={14} stroke={2.5} />
@@ -284,8 +300,9 @@ export function LiquidMultimodalInput({
                 onKeyDown={handleKey}
                 placeholder={placeholder}
                 aria-label="Chat input"
-                className="w-full resize-none bg-transparent px-3 py-1 text-[16px] leading-snug text-foreground outline-none placeholder:text-muted-foreground md:text-base"
+                className="w-full resize-none bg-transparent px-0.5 py-1 text-[16px] leading-snug text-foreground outline-none placeholder:text-muted-foreground md:text-base"
                 style={{ minHeight: "80px", maxHeight }}
+                {...textareaProps}
               />
             </div>
           </div>
@@ -297,7 +314,7 @@ export function LiquidMultimodalInput({
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 aria-label="Attach files"
-                className="grid h-8 w-8 place-items-center rounded-full text-slate-500 transition-colors hover:bg-black/5 hover:text-foreground dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-foreground"
+                className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-accent/10 hover:text-foreground"
               >
                 <IconPaperclip size={18} />
               </button>
@@ -305,7 +322,7 @@ export function LiquidMultimodalInput({
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 aria-label="Attach images"
-                className="grid h-8 w-8 place-items-center rounded-full text-slate-500 transition-colors hover:bg-black/5 hover:text-foreground dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-foreground"
+                className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-accent/10 hover:text-foreground"
               >
                 <IconPhoto size={18} />
               </button>
@@ -333,6 +350,7 @@ export function LiquidMultimodalInput({
                 />
               )}
 
+              {!hideSubmit && (
               <motion.button
                 type="button"
                 onClick={submit}
@@ -342,15 +360,15 @@ export function LiquidMultimodalInput({
                 transition={{ type: "spring", stiffness: 400, damping: 22 }}
                 className={cn(
                   "grid h-8 w-8 place-items-center rounded-full transition-all ml-1 shrink-0",
-                  "bg-chili-500 text-white shadow-[0_2px_8px_-2px_rgba(205,28,24,0.4)]",
-                  "hover:bg-chili-600 hover:shadow-[0_4px_12px_-2px_rgba(205,28,24,0.6)]",
-                  "disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none",
-                  "dark:disabled:bg-white/10 dark:disabled:text-white/30"
+                  "bg-primary text-primary-foreground shadow-sm",
+                  "hover:bg-primary/90 hover:shadow-md",
+                  "disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none"
                 )}
                 style={{ willChange: "transform" }}
               >
                 <IconArrowUp size={16} stroke={2.5} />
               </motion.button>
+              )}
             </div>
           </div>
 
@@ -365,7 +383,7 @@ export function LiquidMultimodalInput({
                 className="pointer-events-none absolute inset-0 z-30 grid place-items-center rounded-[28px] bg-white/40 backdrop-blur-[2px] dark:bg-[#121212]/60"
                 style={{ willChange: "opacity" }}
               >
-                <div className="flex items-center gap-2 rounded-full border border-chili-500/20 bg-white px-5 py-2.5 text-sm font-semibold text-chili-600 shadow-xl dark:border-chili-500/30 dark:bg-[#1a1a1a] dark:text-chili-500">
+                <div className="flex items-center gap-2 rounded-full border border-primary/20 bg-popover px-5 py-2.5 text-sm font-semibold text-primary shadow-xl">
                   <IconPaperclip size={16} />
                   Drop files here
                 </div>
@@ -464,12 +482,14 @@ function ModelSelector({
     });
   }, []);
 
+  const closeMenu = React.useCallback(() => {
+    setOpen(false);
+    setMenuPosition(null);
+    setHoverId(null);
+  }, []);
+
   React.useEffect(() => {
-    if (!open) {
-      setMenuPosition(null);
-      setHoverId(null);
-      return;
-    }
+    if (!open) return;
 
     updateMenuPosition();
 
@@ -481,10 +501,10 @@ function ModelSelector({
       ) {
         return;
       }
-      setOpen(false);
+      closeMenu();
     }
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") closeMenu();
     }
     function onViewportChange() {
       updateMenuPosition();
@@ -501,7 +521,7 @@ function ModelSelector({
       window.removeEventListener("resize", onViewportChange);
       window.removeEventListener("scroll", onViewportChange, true);
     };
-  }, [open, updateMenuPosition]);
+  }, [open, updateMenuPosition, closeMenu]);
 
   React.useLayoutEffect(() => {
     if (!open) return;
@@ -577,7 +597,7 @@ function ModelSelector({
                         onFocus={() => setHoverId(m.id)}
                         onClick={() => {
                           onChange(m.id);
-                          setOpen(false);
+                          closeMenu();
                         }}
                         className={cn(
                           "group/opt relative flex w-full items-start gap-3 rounded-xl px-3 py-2.5 text-left outline-none",
@@ -662,12 +682,11 @@ function ModelSelector({
         aria-expanded={open}
         aria-controls={open ? listboxId : undefined}
         aria-label={`Model: ${current.label}`}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => (open ? closeMenu() : setOpen(true))}
         className={cn(
           "inline-flex h-8 items-center gap-1.5 rounded-full px-2.5 text-[13px] font-medium transition-all duration-200",
-          "bg-transparent text-slate-600 hover:text-slate-900 hover:bg-black/5",
-          "dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/10",
-          open && "bg-black/5 text-slate-900 dark:bg-white/10 dark:text-white"
+          "bg-transparent text-muted-foreground hover:bg-accent/10 hover:text-foreground",
+          open && "bg-accent/10 text-foreground"
         )}
       >
         <span className="text-inherit">

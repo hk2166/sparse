@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { IdeaForm } from "@/components/ideas/idea-form";
+import { TextHighlight } from "@/components/wensity/text-highlight";
+import { Heading, Lead, Muted } from "@/components/wensity/typography";
 
 export const metadata: Metadata = {
   title: "Tell us what hurts — TheSparseLabs",
@@ -14,21 +16,25 @@ export default function TellUsPage() {
     // Top padding clears the fixed header, which is h-16 sm:h-18.
     <main className="flex-1 bg-background px-5 pb-24 pt-28 sm:px-8 sm:pb-32 sm:pt-36">
       <div className="mx-auto w-full max-w-4xl">
-        <h1 className="max-w-3xl text-balance font-heading text-[2.25rem] leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-          Tell us what hurts
-        </h1>
+        <Heading level={1} className="max-w-3xl">
+          Tell us{" "}
+          {/* Two words on purpose: the host is inline-block, so a longer
+              phrase shrink-wraps and wraps inside itself mid-sentence. */}
+          <TextHighlight color="var(--primary)">what hurts</TextHighlight>
+        </Heading>
 
-        <p className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+        <Lead className="mt-6 max-w-2xl">
           Describe the thing that keeps getting in your way, or the small tool
           you wish existed. Ideas that fit in fifteen days are the ones we
           build.
-        </p>
+        </Lead>
 
-        <div className="mt-10 sm:mt-12">
+        {/* Narrower than the page: form fields read badly at full 4xl width. */}
+        <div className="mx-auto mt-10 max-w-2xl sm:mt-12">
           <IdeaForm />
         </div>
 
-        <p className="mt-8 text-base text-muted-foreground">
+        <Muted className="mt-8">
           Curious what others have posted?{" "}
           <Link
             href="/ideas"
@@ -37,7 +43,7 @@ export default function TellUsPage() {
             See the ideas wall
           </Link>
           .
-        </p>
+        </Muted>
       </div>
     </main>
   );

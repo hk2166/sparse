@@ -6,8 +6,10 @@ import { useActionState, useEffect, useRef, type ReactNode } from "react";
 
 import { submitIdea } from "@/app/tell-us/actions";
 import { Confetti, type ConfettiRef } from "@/components/ui/confetti";
+import { LiquidMultimodalInput } from "@/components/wensity/liquid-multimodal-input";
 import { IDEA_LIMITS } from "@/lib/idea-limits";
 import type { IdeaFormState } from "@/lib/ideas";
+import { themeConfettiColors } from "@/lib/theme-colors";
 import { cn } from "@/lib/utils";
 
 const initialState: IdeaFormState = { status: "idle" };
@@ -76,7 +78,10 @@ export function IdeaForm() {
 
   // A saved idea is the one moment on this page worth a flourish.
   useEffect(() => {
-    if (state.status === "success") void confettiRef.current?.fire();
+    // Resolved per fire, so the burst follows the active light/dark theme.
+    if (state.status === "success") {
+      void confettiRef.current?.fire({ colors: themeConfettiColors() });
+    }
   }, [state]);
 
   return (
@@ -118,28 +123,28 @@ export function IdeaForm() {
         hint="Who has it, and what would make it go away?"
         error={errors.details}
       >
-        <textarea
-          id="idea-details"
-          name="details"
-          required
-          rows={4}
-          minLength={IDEA_LIMITS.details.min}
-          maxLength={IDEA_LIMITS.details.max}
-          defaultValue={values?.details}
-          aria-invalid={Boolean(errors.details)}
-          aria-describedby={describe("idea-details", Boolean(errors.details))}
-          // Grows with the text where the browser supports field-sizing;
-          // elsewhere it stays put and can still be dragged taller.
-          onKeyDown={(event) => {
-            if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-              event.preventDefault();
-              event.currentTarget.form?.requestSubmit();
-            }
+        {/*
+          The box keeps its own text, so a rejected post comes back with what
+          was typed still in it. Attachments are decorative for now: they live
+          in component state only and are not submitted or stored anywhere.
+        */}
+        <LiquidMultimodalInput
+          hideModel
+          hideSubmit
+          // The component caps itself at max-w-3xl; the form is the one that
+          // decides how wide its fields are.
+          className="max-w-none"
+          placeholder="Tell us what hurts…"
+          textareaProps={{
+            id: "idea-details",
+            name: "details",
+            required: true,
+            minLength: IDEA_LIMITS.details.min,
+            maxLength: IDEA_LIMITS.details.max,
+            "aria-label": undefined,
+            "aria-invalid": Boolean(errors.details),
+            "aria-describedby": describe("idea-details", Boolean(errors.details)),
           }}
-          className={cn(
-            inputClass,
-            "field-sizing-content max-h-80 min-h-28 resize-y leading-relaxed",
-          )}
         />
       </Field>
 

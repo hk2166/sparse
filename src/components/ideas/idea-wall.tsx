@@ -4,12 +4,13 @@ import { connection } from "next/server";
 
 import { getIdeas } from "@/lib/ideas";
 import { describeAge, describeMoment } from "@/lib/relative-time";
+import { Heading, Muted } from "@/components/wensity/typography";
 
 function Notice({ children }: { children: React.ReactNode }) {
   return (
-    <p className="rounded-2xl border border-dashed border-border px-5 py-10 text-center text-base text-muted-foreground">
+    <Muted className="rounded-2xl border border-dashed border-border px-5 py-10 text-center">
       {children}
-    </p>
+    </Muted>
   );
 }
 
@@ -57,9 +58,7 @@ export async function IdeaWall() {
         >
           <LightbulbIcon className="size-5" />
         </span>
-        <p className="text-base text-muted-foreground">
-          Nothing on the wall yet.
-        </p>
+        <Muted>Nothing on the wall yet.</Muted>
         <Link
           href="/tell-us"
           className="text-base font-medium text-foreground underline underline-offset-4 transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -79,12 +78,12 @@ export async function IdeaWall() {
           key={idea.id}
           className="mb-4 break-inside-avoid rounded-2xl border border-border bg-card p-5 sm:p-6"
         >
-          <h2 className="text-balance text-lg font-medium leading-snug text-foreground">
-            {idea.title}
-          </h2>
-          <p className="mt-2 wrap-break-word whitespace-pre-line text-pretty text-base leading-relaxed text-muted-foreground">
+          <Heading level={4} asChild>
+            <h2>{idea.title}</h2>
+          </Heading>
+          <Muted className="mt-2 wrap-break-word whitespace-pre-line">
             {idea.details}
-          </p>
+          </Muted>
           <p className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm text-muted-foreground">
             <span>{idea.name ?? "Anonymous"}</span>
             <time
