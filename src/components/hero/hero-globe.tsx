@@ -88,7 +88,7 @@ export function HeroGlobe({ className }: { className?: string }) {
     <div
       aria-hidden
       className={cn(
-        "absolute inset-x-0 mx-auto aspect-square w-[min(150%,28rem)] sm:w-[min(120%,46rem)]",
+        "absolute inset-x-0 mx-auto aspect-square w-[min(140%,26rem)] sm:w-[min(115%,42rem)]",
         className,
       )}
     >
