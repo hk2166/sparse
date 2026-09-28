@@ -9,7 +9,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), ui-sans-serif, sans-serif, system-ui;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-instrument-serif), var(--font-serif);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -127,6 +127,16 @@
   --shadow-xl: 0 1px 2px 0px hsl(225.5172 35.8025% 15.8824% / 0.05), 0 8px 10px -1px hsl(225.5172 35.8025% 15.8824% / 0.05);
   --shadow-2xl: 0 1px 2px 0px hsl(225.5172 35.8025% 15.8824% / 0.13);
   --tracking-normal: 0em;
+
+  /* For <canvas> and WebGL only — cobe needs [r,g,b] floats and can't read
+     var() or parse oklch. Nothing reachable by CSS should use these.
+       --canvas-globe  the land dots (cobe lights them off baseColor)
+       --canvas-glow   the atmosphere rim
+       --canvas-accent the city markers, mirroring --primary
+     Light stays white-on-white, which is what makes the dots read as dark. */
+  --canvas-globe: #ffffff;
+  --canvas-glow: #ffffff;
+  --canvas-accent: #19398d;
 }
 
 .dark {
@@ -182,6 +192,14 @@
   --shadow-lg: 0 1px 2px 0px hsl(0 0% 0% / 0.05), 0 4px 6px -1px hsl(0 0% 0% / 0.05);
   --shadow-xl: 0 1px 2px 0px hsl(0 0% 0% / 0.05), 0 8px 10px -1px hsl(0 0% 0% / 0.05);
   --shadow-2xl: 0 1px 2px 0px hsl(0 0% 0% / 0.13);
+
+  /* See the note in :root. The globe base must be a light tone here, not the
+     page colour — cobe lights the land dots off it, so a near-black base
+     leaves them invisible at any brightness. A blue-tinted white keeps them
+     on-theme against the --primary rim. */
+  --canvas-globe: #c9d5f2;
+  --canvas-glow: #6a8dd8;
+  --canvas-accent: #ffffff;
 }
 
 @layer base {
@@ -195,4 +213,13 @@
   html {
     @apply font-sans;
   }
+}
+
+/* AnimatedThemeToggler drives the reveal with a WAAPI clip-path animation on
+   ::view-transition-new(root), so the browser's default cross-fade has to be
+   switched off or the two fight each other. Added by the magicui registry. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
