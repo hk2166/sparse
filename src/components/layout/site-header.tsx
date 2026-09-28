@@ -34,7 +34,7 @@ export function SiteHeader() {
           : "border-b border-transparent",
       )}
     >
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-6 px-5 sm:h-18 sm:px-8">
+      <div className="mx-auto flex h-16 w-full max-w-4xl items-center justify-between gap-6 px-5 sm:h-18 sm:px-8">
         <a
           href="#top"
           className="font-heading text-xl tracking-tight text-foreground transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:text-2xl"
@@ -86,7 +86,7 @@ export function SiteHeader() {
           id="site-menu"
           className="border-t border-border bg-card/95 backdrop-blur-md md:hidden"
         >
-          <nav className="mx-auto flex w-full max-w-6xl flex-col gap-1 px-5 py-4 sm:px-8">
+          <nav className="mx-auto flex w-full max-w-4xl flex-col gap-1 px-5 py-4 sm:px-8">
             {LINKS.map((link) => (
               <a
                 key={link.href}

@@ -88,7 +88,13 @@ export function HeroGlobe({ className }: { className?: string }) {
     <div
       aria-hidden
       className={cn(
-        "absolute inset-x-0 mx-auto aspect-square w-[min(140%,26rem)] sm:w-[min(115%,42rem)]",
+        // Diameter and crown height are separate knobs and they fight. The crown
+        // is capped by the room between the buttons and the section bottom; the
+        // FRACTION of the sphere that shows is crown/diameter. Shrinking the
+        // globe raises that fraction, but once it passes ~50% the crown clears
+        // the equator and you get a whole planet behind the copy instead of a
+        // horizon. Keep the visible fraction under ~40%.
+        "absolute inset-x-0 mx-auto aspect-square w-[min(140%,26rem)] sm:w-[min(115%,48rem)]",
         className,
       )}
     >

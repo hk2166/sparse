@@ -1,4 +1,5 @@
 import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
+import { TextHighlight } from "@/components/wensity/text-highlight";
 import { VillainBars } from "@/components/villain/villain-bars";
 
 /**
@@ -24,9 +25,14 @@ export function Villain() {
     // The cards then come back up to bg-card, so they read as raised panels
     // without needing a shadow.
     <section className="relative isolate bg-background px-5 py-24 sm:px-8 sm:py-32 lg:py-40">
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="mx-auto w-full max-w-4xl">
         <h2 className="max-w-3xl text-balance font-heading text-[1.75rem] leading-[1.12] tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-          Most software arrives too late to matter.
+          Most software arrives{" "}
+          {/* The phrase kept short on purpose: the host is inline-block, so a
+              long one shrink-wraps to the remaining line width and wraps
+              inside itself mid-sentence. Two words also hit harder. */}
+          <TextHighlight color="var(--primary)">too late</TextHighlight> to
+          matter.
         </h2>
 
         {/* md:grid-cols-2 overrides the primitive's md:grid-cols-3 through

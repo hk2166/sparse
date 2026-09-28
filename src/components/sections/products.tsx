@@ -1,4 +1,5 @@
 import { ProductShapes } from "@/components/products/product-shapes";
+import { TextHighlight } from "@/components/wensity/text-highlight";
 
 /**
  * docs/Idea.md §5. This is the section that licenses everything else — it is
@@ -16,9 +17,11 @@ export function Products() {
     <section className="relative isolate overflow-hidden bg-background px-5 py-24 sm:px-8 sm:py-32 lg:py-40">
       {/* The belt is inside the grid, not full-bleed: it lines up with the
           headline and the closing line rather than running past them. */}
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="mx-auto w-full max-w-4xl">
         <h2 className="max-w-3xl text-balance font-heading text-[1.75rem] leading-[1.12] tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-          Whatever shape the problem is
+          Whatever{" "}
+          <TextHighlight color="var(--primary)">shape</TextHighlight> the
+          problem is
         </h2>
 
         <p className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">

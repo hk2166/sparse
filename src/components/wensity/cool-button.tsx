@@ -85,6 +85,11 @@ export type CoolButtonProps<E extends "a" | "button" = "a"> = {
  * An animated button/link with a soft spinning orbit border.
  * Renders as an anchor by default; use `as="button"` for button behavior.
  *
+ * The inner surface carries w-full/justify-center so the pill tracks the root's
+ * width. Upstream it was content-sized, so any caller passing `w-full` got a
+ * full-width spinning border with a small label pill floating in the middle of
+ * it. At the default intrinsic width this changes nothing.
+ *
  * @example
  * // As link (default)
  * <CoolButton href="/about">About</CoolButton>
@@ -125,8 +130,8 @@ export function CoolButton<E extends "a" | "button" = "a">({
       </span>
 
       {/* Theme-aware inner background — off-white light / black dark */}
-      <span className="relative z-10 flex items-center gap-3 rounded-lg bg-card px-5 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),inset_0_-1px_0_rgba(15,23,42,0.08),0_1px_1px_rgba(15,23,42,0.08),0_8px_24px_rgba(15,23,42,0.14)] transition-all duration-300 group-hover/cool:shadow-[inset_0_1px_0_rgba(255,255,255,0.82),inset_0_-1px_0_rgba(15,23,42,0.12),0_2px_6px_rgba(15,23,42,0.14),0_12px_34px_rgba(15,23,42,0.2)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),inset_0_-1px_0_rgba(0,0,0,0.5),0_1px_1px_rgba(0,0,0,0.45),0_10px_28px_rgba(0,0,0,0.35)] dark:group-hover/cool:shadow-[inset_0_1px_0_rgba(255,255,255,0.1),inset_0_-1px_0_rgba(0,0,0,0.6),0_2px_6px_rgba(0,0,0,0.55),0_14px_34px_rgba(0,0,0,0.42)] active:scale-[0.98]">
-        <span className="font-medium text-base tracking-wide text-card-foreground">
+      <span className="relative z-10 flex w-full items-center justify-center gap-3 whitespace-nowrap rounded-lg bg-card px-3.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),inset_0_-1px_0_rgba(15,23,42,0.08),0_1px_1px_rgba(15,23,42,0.08),0_8px_24px_rgba(15,23,42,0.14)] transition-all duration-300 group-hover/cool:shadow-[inset_0_1px_0_rgba(255,255,255,0.82),inset_0_-1px_0_rgba(15,23,42,0.12),0_2px_6px_rgba(15,23,42,0.14),0_12px_34px_rgba(15,23,42,0.2)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),inset_0_-1px_0_rgba(0,0,0,0.5),0_1px_1px_rgba(0,0,0,0.45),0_10px_28px_rgba(0,0,0,0.35)] dark:group-hover/cool:shadow-[inset_0_1px_0_rgba(255,255,255,0.1),inset_0_-1px_0_rgba(0,0,0,0.6),0_2px_6px_rgba(0,0,0,0.55),0_14px_34px_rgba(0,0,0,0.42)] active:scale-[0.98] sm:px-5 sm:py-2.5">
+        <span className="font-medium text-sm tracking-wide text-card-foreground sm:text-base">
           {children ?? "Welcome to wensity ui"}
         </span>
       </span>

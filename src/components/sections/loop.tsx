@@ -1,4 +1,5 @@
 import { LoopSteps } from "@/components/loop/loop-steps";
+import { TextHighlight } from "@/components/wensity/text-highlight";
 
 /**
  * docs/Idea.md §4. This is the substrate the rest of the page rests on —
@@ -29,12 +30,13 @@ export function Loop() {
       aria-labelledby="loop-heading"
       className="relative isolate scroll-mt-20 overflow-hidden bg-card px-5 py-24 sm:scroll-mt-24 sm:px-8 sm:py-32 lg:py-40"
     >
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="mx-auto w-full max-w-4xl">
         <h2
           id="loop-heading"
           className="max-w-3xl text-balance font-heading text-[1.75rem] leading-[1.12] tracking-tight text-foreground sm:text-4xl lg:text-5xl"
         >
-          How fifteen days works
+          How <TextHighlight color="var(--primary)">fifteen days</TextHighlight>{" "}
+          works
         </h2>
 
         <p className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
