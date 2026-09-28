@@ -19,13 +19,19 @@ export interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   asChild?: boolean;
 }
 
+/**
+ * Wensity ships a compact, app-sized scale (32/26/21px, no `lg:` step). This
+ * site is a landing page, so levels 1 and 2 keep the display sizes the hand
+ * -written headings used before the primitives landed, and 3-6 step down from
+ * there. Levels 1-3 stay responsive across sm and lg.
+ */
 const headingScale: Record<HeadingLevel, string> = {
-  1: "text-[32px] font-semibold leading-[1.15] tracking-[-0.02em] sm:text-[40px]",
-  2: "text-[26px] font-semibold leading-[1.2] tracking-[-0.018em] sm:text-[32px]",
-  3: "text-[21px] font-semibold leading-[1.3] tracking-[-0.012em] sm:text-[24px]",
-  4: "text-[17px] font-semibold leading-[1.4] tracking-[-0.006em]",
-  5: "text-[15px] font-semibold leading-[1.4] tracking-[-0.003em]",
-  6: "text-[13px] font-semibold uppercase leading-[1.4] tracking-[0.02em]",
+  1: "text-[2.25rem] font-semibold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl",
+  2: "text-[1.75rem] font-semibold leading-[1.12] tracking-tight sm:text-4xl lg:text-5xl",
+  3: "text-[1.375rem] font-semibold leading-[1.2] tracking-tight sm:text-2xl lg:text-3xl",
+  4: "text-lg font-semibold leading-snug tracking-tight sm:text-xl",
+  5: "text-base font-semibold leading-snug tracking-tight sm:text-lg",
+  6: "text-sm font-semibold uppercase leading-[1.4] tracking-[0.02em]",
 };
 
 export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
