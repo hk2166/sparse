@@ -1,8 +1,14 @@
+"use client";
+
 /**
  * Vendored from opensourceui.in/components/phone — that site publishes
  * copy-paste source, not a shadcn registry, so there is nothing to re-run
  * to update this. Only change from upstream: cn comes from @/lib/utils,
  * which is where this project keeps it.
+ *
+ * Second change: the `purple` variant and the always-rendered chassis now use
+ * theme tokens. The bg-white screen backdrop in particular actively fought
+ * dark mode. The four other variants keep their upstream hex — none is in use.
  */
 import {
   forwardRef,
@@ -14,8 +20,8 @@ import { cn } from "@/lib/utils";
 
 const phoneFrameVariants = {
   purple: {
-    frame: "bg-[#4a4254]",
-    button: "bg-[#423d4d]",
+    frame: "bg-border",
+    button: "bg-muted-foreground/30",
   },
   orange: {
     frame: "bg-[#d4845a]",
@@ -103,18 +109,18 @@ function PhoneScreen({
   showDynamicIsland: boolean;
 }>) {
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-[2.5rem] bg-black">
+    <div className="relative h-full w-full overflow-hidden rounded-[2.5rem] bg-border">
       {/* Screen — thin ~4px bezel on all sides */}
-      <div className="absolute inset-[3.5px] overflow-hidden rounded-[2.3rem] bg-white">
+      <div className="absolute inset-[3.5px] overflow-hidden rounded-[2.3rem] bg-background">
         <div className="relative h-full w-full">{children}</div>
 
         {showDynamicIsland ? (
           <div
-            className="absolute top-[9px] left-1/2 z-20 h-[20px] w-[66px] -translate-x-1/2 rounded-full bg-black"
+            className="absolute top-[9px] left-1/2 z-20 h-[20px] w-[66px] -translate-x-1/2 rounded-full bg-foreground"
             aria-hidden="true"
           >
             <div
-              className="absolute top-1/2 right-[5px] block h-[8px] w-[8px] shrink-0 -translate-y-1/2 rounded-full bg-[#6a90c8]/20"
+              className="absolute top-1/2 right-[5px] block h-[8px] w-[8px] shrink-0 -translate-y-1/2 rounded-full bg-primary/25"
               aria-hidden="true"
             />
           </div>
@@ -122,7 +128,7 @@ function PhoneScreen({
 
         {/* Home indicator */}
         <div
-          className="absolute bottom-[5.5px] left-1/2 z-20 h-[3px] w-[32%] -translate-x-1/2 rounded-full bg-black/20"
+          className="absolute bottom-[5.5px] left-1/2 z-20 h-[3px] w-[32%] -translate-x-1/2 rounded-full bg-muted-foreground/30"
           aria-hidden="true"
         />
       </div>

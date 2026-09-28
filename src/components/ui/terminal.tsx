@@ -85,6 +85,11 @@ export const AnimatedSpan = ({
     if (!sequence.sequenceStarted) return
     if (hasStarted) return
     if (sequence.activeIndex === itemIndex) {
+      // Upstream @magicui/terminal. This is a one-way latch — it flips to
+      // true once and never back — so the rule is flagging one extra render
+      // pass, not a correctness bug. Suppressed rather than rewritten so the
+      // file stays close to the registry version on a future re-add.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHasStarted(true)
     }
   }, [sequence, hasStarted, itemIndex])
@@ -164,6 +169,8 @@ export const TypingAnimation = ({
 
     if (hasSequence && itemIndex !== null) {
       if (sequenceStarted && !started && sequenceActiveIndex === itemIndex) {
+        // Same one-way latch as AnimatedSpan above; see the note there.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setStarted(true)
       }
     } else if (!startOnView || isInView) {
@@ -279,9 +286,11 @@ export const Terminal = ({
     >
       <div className="border-border flex flex-col gap-y-2 border-b p-4">
         <div className="flex flex-row gap-x-2">
-          <div className="h-2 w-2 rounded-full bg-red-500"></div>
-          <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
-          <div className="h-2 w-2 rounded-full bg-green-500"></div>
+          {/* Traffic lights off the chart scale rather than red/yellow/green-500
+              — docs/Idea.md rules out a parallel palette, and these re-theme. */}
+          <div className="h-2 w-2 rounded-full bg-chart-3"></div>
+          <div className="h-2 w-2 rounded-full bg-chart-4"></div>
+          <div className="h-2 w-2 rounded-full bg-chart-5"></div>
         </div>
       </div>
       <pre className="p-4">

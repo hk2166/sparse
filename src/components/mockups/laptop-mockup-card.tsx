@@ -1,8 +1,15 @@
+"use client";
+
 /**
  * Vendored from opensourceui.in/components/laptop — that site publishes
  * copy-paste source, not a shadcn registry, so there is nothing to re-run
  * to update this. Only change from upstream: cn comes from @/lib/utils,
  * which is where this project keeps it.
+ *
+ * Second change: the `gray` variant and the always-rendered bezel now use
+ * theme tokens instead of the neutral-* scale, because docs/Idea.md forbids a
+ * parallel colour system and this is the variant the page actually renders.
+ * The nine other variants still carry their upstream hex — none is in use.
  */
 import {
   forwardRef,
@@ -14,9 +21,9 @@ import { cn } from "@/lib/utils";
 
 const laptopFrameVariants = {
   gray: {
-    border: "border-neutral-300",
-    base: "bg-linear-to-b from-neutral-300 to-neutral-400",
-    notch: "bg-neutral-500",
+    border: "border-border",
+    base: "bg-linear-to-b from-muted to-border",
+    notch: "bg-muted-foreground/30",
   },
   titanium: {
     border: "border-[#7a7671]",
@@ -94,8 +101,8 @@ export const LaptopMockupCard = forwardRef<
           frame.border,
         )}
       >
-        <div className="bg-neutral-800 p-1.5 pb-0">
-          <div className="relative h-46 overflow-hidden rounded-t-sm bg-neutral-900 md:h-63">
+        <div className="bg-border p-1.5 pb-0">
+          <div className="relative h-46 overflow-hidden rounded-t-sm bg-background md:h-63">
             <div className="relative size-full overflow-hidden rounded-t-sm">
               {children}
             </div>
