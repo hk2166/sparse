@@ -34,6 +34,9 @@ yarn-error.log*
 .env*
 !.env.example
 
+# npm lockfile (this project keeps bun.lock)
+/package-lock.json
+
 # vercel
 .vercel
 
