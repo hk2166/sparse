@@ -8,7 +8,6 @@ import { ChevronRightIcon, MenuIcon, XIcon } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import { useScrolled } from "@/hooks/use-scrolled";
-import { fireSideCannons } from "@/lib/side-cannons";
 import { cn } from "@/lib/utils";
 
 /**
@@ -18,17 +17,12 @@ import { cn } from "@/lib/utils";
 const LINKS = [
   { label: "Products", href: "/#products" },
   { label: "Method", href: "/#method" },
-  { label: "Open source", href: "/#open-source" },
+  { label: "Open source", href: "/open-source" },
   { label: "Ideas", href: "/ideas" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const CTA = { label: "Tell us what hurts", href: "/tell-us" };
-
-// Decorative only: a failed chunk load shouldn't surface as an unhandled rejection.
-const celebrate = () => {
-  fireSideCannons().catch(() => {});
-};
 
 /**
  * Pill CTA: animated gradient hairline border, gradient label, nudging chevron.
@@ -50,13 +44,13 @@ function GradientPillLink({
       href={href}
       onClick={onClick}
       className={cn(
-        "group relative inline-flex items-center justify-center rounded-full px-4 font-medium shadow-[inset_0_-8px_10px_#8fdfff1f] [transition:box-shadow_500ms_ease-out,scale_150ms_ease-out] hover:shadow-[inset_0_-5px_10px_#8fdfff3f] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        "group relative inline-flex items-center justify-center rounded-full px-4 font-medium shadow-[inset_0_-8px_10px_color-mix(in_oklab,var(--primary),transparent_88%)] [transition:box-shadow_500ms_ease-out,scale_150ms_ease-out] hover:shadow-[inset_0_-5px_10px_color-mix(in_oklab,var(--primary),transparent_76%)] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         className,
       )}
     >
       <span
         aria-hidden
-        className="animate-gradient absolute inset-0 block size-full rounded-[inherit] bg-linear-to-r from-[#ffaa40]/50 via-[#9c40ff]/50 to-[#ffaa40]/50 bg-size-[300%_100%] p-px motion-reduce:animate-none"
+        className="animate-gradient absolute inset-0 block size-full rounded-[inherit] bg-linear-to-r from-primary/40 via-primary to-primary/40 bg-size-[300%_100%] p-px motion-reduce:animate-none"
         style={{
           WebkitMask:
             "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
@@ -71,7 +65,7 @@ function GradientPillLink({
       </AnimatedGradientText>
       <ChevronRightIcon
         aria-hidden
-        className="ml-1 size-4 stroke-neutral-500 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5"
+        className="ml-1 size-4 text-muted-foreground transition-transform duration-300 ease-in-out group-hover:translate-x-0.5"
       />
     </Link>
   );
@@ -137,7 +131,6 @@ export function SiteHeader() {
           >
             <GradientPillLink
               href={CTA.href}
-              onClick={celebrate}
               className="min-h-10 text-sm"
             >
               {CTA.label}
@@ -187,10 +180,7 @@ export function SiteHeader() {
             {showCta ? (
               <GradientPillLink
                 href={CTA.href}
-                onClick={() => {
-                  setOpen(false);
-                  celebrate();
-                }}
+                onClick={() => setOpen(false)}
                 className="mt-3 min-h-11 text-base"
               >
                 {CTA.label}

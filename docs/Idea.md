@@ -26,8 +26,7 @@ The project is already set up; follow what's there rather than introducing a fou
 - **Theming lives entirely in `src/app/globals.css`.** A tweakcn theme is applied: semantic tokens (`--primary`, `--background`, `--muted`, `--card`, `--border`, plus chart and sidebar scales) defined in `:root` with a full `.dark` override, mapped into Tailwind through `@theme inline`. **Use those tokens.** Do not hardcode hex values in components, and do not create a parallel colour system — the whole point of the pattern is that one file re-themes the page.
 - Note the theme also redefines `--spacing` to `0.24rem` (Tailwind's default is `0.25rem`), so every `p-*`, `gap-*` and `m-*` is 4% tighter than stock. That's deliberate; don't "fix" it.
 - Fonts: **Inter** via `next/font`, wired to `--font-sans`. `--font-mono` is a system stack.
-
-> `[[TODO: the user mentions a third library, "Magic" (likely Magic UI). It is **not installed** — nothing in package.json, no registry in components.json, no trace in the repo. Either install it before the build starts, or drop it from the plan. Do not write components against a library that isn't there.]]`
+- **Magic UI** is wired in as a registry, not a package — `"@magicui": "https://magicui.design/r/{name}"` under `registries` in `components.json`. Components are copied into `src/components/ui` and then owned and edited locally; several already are (`bento-grid`, `marquee`, `terminal`, `safari`, `iphone`, `globe`, `animated-list`). Add with `bunx --bun shadcn@latest add @magicui/<slug>`. Where a copied component is edited away from upstream, say why in a comment at the point of the change — `bento-grid.tsx` and `animated-list.tsx` both do.
 
 ### Voice rules
 
@@ -77,14 +76,53 @@ The project is already set up; follow what's there rather than introducing a fou
 **Headline:**
 > Most software arrives too late to matter.
 
-**Body:**
-> A year of roadmap. Two quarters of discovery. A launch that finally answers a question the customer stopped asking in month three. We've worked inside that, and the waste isn't the money — it's watching a real problem sit there, unfixed, while everyone aligns.
->
-> The opposite failure is just as bad. Something generated in an afternoon, shipped without ever meeting the person it was supposedly for, solving nothing. Fast is only worth anything when it's pointed at something true.
->
-> So we kept the speed and added the constraint.
+**Everything else in this section is the feed.** There is no body copy. The three paragraphs that used to sit here said out loud what the rows now show, and a reader who has just watched a launch land in month eleven does not need to be told it was slow.
+
+---
+
+### The feed
+
+One frame, one queue, running on a loop. Rows arrive at the top, push the rest down, and fade out at the floor of the frame. It starts when the section scrolls into view and never finishes.
+
+**The timestamp column is the argument.** Read it as it goes past and it runs months, then minutes, then days. Nothing is labelled "slow" or "wasteful" — the reader does that arithmetic themselves, which is the only way they'll believe it.
+
+Nine rows in this order, looping. Each is an icon, a title, when it happened, and one line underneath.
+
+| | icon | title | when | underneath |
+|---|---|---|---|---|
+| **a year** | people | Discovery kickoff | month 1 | Twelve people, one hour |
+| | document | Requirements, revised | month 4 | Third version this quarter |
+| | megaphone | Launch | month 11 | The question changed in month three |
+| **an afternoon** | sparkles | Prompt, then a product | 2m ago | Nobody ran it past a user |
+| | rocket | Deployed to production | 31m ago | Forty-one files, none of them read |
+| | ghost | Still nobody has opened it | 40m ago | It solved nothing |
+| **fifteen days** | eye | Noticed the friction | day 1 | Someone's fourth workaround |
+| | scissors | Cut to one thing | day 4 | Everything else waits |
+| | send | **Shipped** | day 15 | A thing you can open |
+
+The group labels in that table are for whoever builds it. **They are not rendered** — the durations are not headings any more, they are three runs of rows inside one stream.
+
+The order is deliberate and the loop is the point. Ceremony piles up and launches into an empty room; slop ships in an afternoon to nobody; then the same problem goes through the loop and something real lands on day fifteen. Then it starts again, because it does.
+
+The last three rows are Notice, Cut and Ship from §4 under different names, so the next section reads as the mechanism behind something the reader has already watched happen.
+
+**Build notes:**
+
+- **Feed on the left, half the width.** The right column is deliberately empty until its counterpart visual exists — a placeholder box would only look unfinished. On mobile the feed centres and takes the full column.
+- **No frame around the feed.** The rows are already cards; a border around a column of bordered cards reads as a box someone forgot to remove.
+- **Close the seam with the hero.** The hero's surface is `--card` and this section's is `--background` — different values in both themes — so they meet on a hard line just under the globe. The hero's own dissolve resolves to `--card` on purpose, so it stays independent of whatever follows; closing the rest of the gap is this section's job, with a tall `--card` → transparent ramp at its top edge. Tall enough that the ramp never reads as a band in its own right.
+- **The frame has a fixed height and hides its overflow.** Rows are emitted forever; without a ceiling the page grows by a row every tick. A gradient tied to the section background fades the oldest rows out at the floor rather than clipping them on a hard edge.
+- **Keep more rows mounted than the frame can show**, so the oldest leaves from behind the fade instead of popping out in view.
+- **Glass rows:** translucent card over the section surface, hairline border, blurred behind, with a lift in light mode and an inner top-glow in dark. Build the shadows with `color-mix` on `--foreground` rather than a hardcoded `rgba`, so they re-theme with everything else.
+- **Colour comes from the theme's `--chart-1` … `--chart-5` scales**, which have a full `.dark` override. Hue deliberately carries no meaning: the light and dark scales do not map onto each other — `--chart-3` is magenta in light and green in dark — so anything load-bearing would invert on a theme switch. The icon and the timestamp carry the meaning. Colour is only there to stop nine rows reading as one grey wall.
+- **One exception, and it is the point:** the `Shipped` row is the only `--primary` tile in the stream. One colour among the chart scales marks the row the whole page is arguing for.
+- **Tinted tiles, not solid fills.** `--chart-2` and `--chart-5` sit around 0.67–0.75 lightness, and a white glyph on those fails contrast in light mode. A 15% wash with the full-strength icon on top reads as colourful at a glance and survives both themes.
+- **No middle dot between title and timestamp** — the two sit at opposite ends of the row. The reference implementation joins them with a `·`; the voice rules above say not to.
+- **Reduced motion gets the whole list at once, and no loop.** An endless animation is the exact thing that setting is asking to stop, and the rows are content, not decoration, so they cannot be withheld behind a trigger that never fires.
 
 *Job: give the reader something to agree with before asking them to believe anything about us. Name both failure modes — the slow one and the slop one — because the reader has met both.*
+
+*Two earlier versions are worth not going back to. The first drew three bars comparing the durations, which could only say one is longer than another — something a caption already says in words. The second put three feeds in three bento cards with the paragraphs underneath; the cards fought each other for the same point, and the paragraphs said out loud what the rows were already showing. If a visual in this section can be replaced by its own caption, it is not carrying anything — and if the caption can be replaced by the visual, cut the caption.*
 
 ---
 

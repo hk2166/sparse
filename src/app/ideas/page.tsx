@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import { IdeaWall, IdeaWallSkeleton } from "@/components/ideas/idea-wall";
+import { Heading, Lead } from "@/components/wensity/typography";
 
 export const metadata: Metadata = {
   title: "Ideas — TheSparseLabs",
@@ -15,14 +16,14 @@ export default function IdeasPage() {
     // Top padding clears the fixed header, which is h-16 sm:h-18.
     <main className="flex-1 bg-background px-5 pb-24 pt-28 sm:px-8 sm:pb-32 sm:pt-36">
       <div className="mx-auto w-full max-w-4xl">
-        <h1 className="max-w-3xl text-balance font-heading text-[2.25rem] leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+        <Heading level={1} className="max-w-3xl">
           What people want built
-        </h1>
+        </Heading>
 
-        <p className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+        <Lead className="mt-6 max-w-2xl">
           The problems and small tools people have told us about. Ideas that
           fit in fifteen days are the ones we build.
-        </p>
+        </Lead>
 
         {/* From lg up the header carries this button; below that it lives in
             the menu, so the page offers it directly. */}

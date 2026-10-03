@@ -2,12 +2,14 @@
 
 import { CheckIcon } from "lucide-react";
 import Link from "next/link";
-import { useActionState, useEffect, type ReactNode } from "react";
+import { useActionState, useEffect, useRef, type ReactNode } from "react";
 
 import { submitIdea } from "@/app/tell-us/actions";
+import { Confetti, type ConfettiRef } from "@/components/ui/confetti";
+import { LiquidMultimodalInput } from "@/components/wensity/liquid-multimodal-input";
 import { IDEA_LIMITS } from "@/lib/idea-limits";
 import type { IdeaFormState } from "@/lib/ideas";
-import { fireSideCannons } from "@/lib/side-cannons";
+import { themeConfettiColors } from "@/lib/theme-colors";
 import { cn } from "@/lib/utils";
 
 const initialState: IdeaFormState = { status: "idle" };
@@ -56,6 +58,7 @@ export function IdeaForm() {
     submitIdea,
     initialState,
   );
+  const confettiRef = useRef<ConfettiRef>(null);
 
   const errors = state.status === "error" ? (state.errors ?? {}) : {};
   // React clears uncontrolled fields after every action, so on a failed post
@@ -75,7 +78,10 @@ export function IdeaForm() {
 
   // A saved idea is the one moment on this page worth a flourish.
   useEffect(() => {
-    if (state.status === "success") fireSideCannons().catch(() => {});
+    // Resolved per fire, so the burst follows the active light/dark theme.
+    if (state.status === "success") {
+      void confettiRef.current?.fire({ colors: themeConfettiColors() });
+    }
   }, [state]);
 
   return (
@@ -84,6 +90,13 @@ export function IdeaForm() {
       aria-busy={pending}
       className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-8 dark:shadow-[inset_0_1px_0_0_color-mix(in_oklab,var(--foreground),transparent_92%)]"
     >
+      <Confetti
+        ref={confettiRef}
+        manualstart
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-50 size-full"
+      />
+
       <Field
         id="idea-title"
         label="Your idea"
@@ -110,28 +123,28 @@ export function IdeaForm() {
         hint="Who has it, and what would make it go away?"
         error={errors.details}
       >
-        <textarea
-          id="idea-details"
-          name="details"
-          required
-          rows={4}
-          minLength={IDEA_LIMITS.details.min}
-          maxLength={IDEA_LIMITS.details.max}
-          defaultValue={values?.details}
-          aria-invalid={Boolean(errors.details)}
-          aria-describedby={describe("idea-details", Boolean(errors.details))}
-          // Grows with the text where the browser supports field-sizing;
-          // elsewhere it stays put and can still be dragged taller.
-          onKeyDown={(event) => {
-            if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-              event.preventDefault();
-              event.currentTarget.form?.requestSubmit();
-            }
+        {/*
+          The box keeps its own text, so a rejected post comes back with what
+          was typed still in it. Attachments are decorative for now: they live
+          in component state only and are not submitted or stored anywhere.
+        */}
+        <LiquidMultimodalInput
+          hideModel
+          hideSubmit
+          // The component caps itself at max-w-3xl; the form is the one that
+          // decides how wide its fields are.
+          className="max-w-none"
+          placeholder="Tell us what hurts…"
+          textareaProps={{
+            id: "idea-details",
+            name: "details",
+            required: true,
+            minLength: IDEA_LIMITS.details.min,
+            maxLength: IDEA_LIMITS.details.max,
+            "aria-label": undefined,
+            "aria-invalid": Boolean(errors.details),
+            "aria-describedby": describe("idea-details", Boolean(errors.details)),
           }}
-          className={cn(
-            inputClass,
-            "field-sizing-content max-h-80 min-h-28 resize-y leading-relaxed",
-          )}
         />
       </Field>
 

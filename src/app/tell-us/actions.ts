@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 
-import { isDbConfigured } from "@/lib/db";
 import { createIdea, parseIdea, type IdeaFormState } from "@/lib/ideas";
 
 export async function submitIdea(
@@ -32,14 +31,6 @@ export async function submitIdea(
     name: parsed.value.name ?? "",
     email: parsed.value.email ?? "",
   };
-
-  if (!isDbConfigured()) {
-    return {
-      status: "error",
-      message: "Posting ideas isn't switched on yet. Please check back soon.",
-      values,
-    };
-  }
 
   try {
     await createIdea(parsed.value);

@@ -1,5 +1,6 @@
 import { LoopSteps } from "@/components/loop/loop-steps";
 import { TextHighlight } from "@/components/wensity/text-highlight";
+import { Heading, Lead } from "@/components/wensity/typography";
 
 /**
  * docs/Idea.md §4. This is the substrate the rest of the page rests on —
@@ -30,18 +31,21 @@ export function Loop() {
       aria-labelledby="loop-heading"
       className="relative isolate scroll-mt-20 overflow-hidden bg-card px-5 py-24 sm:scroll-mt-24 sm:px-8 sm:py-32 lg:py-40"
     >
+      {/* Dissolves the seam with the section above, the same way Villain does
+          for the hero: that one is --background and this is --card, so they
+          otherwise meet on a hard line. Resolves to the incoming colour, tall
+          enough that the ramp never reads as a band of its own. */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-64 bg-[linear-gradient(to_bottom,var(--background)_0%,color-mix(in_oklab,var(--background),transparent_45%)_38%,color-mix(in_oklab,var(--background),transparent_80%)_68%,transparent_100%)]" />
+
       <div className="mx-auto w-full max-w-4xl">
-        <h2
-          id="loop-heading"
-          className="max-w-3xl text-balance font-heading text-[1.75rem] leading-[1.12] tracking-tight text-foreground sm:text-4xl lg:text-5xl"
-        >
+        <Heading level={2} id="loop-heading" className="max-w-3xl">
           How <TextHighlight color="var(--primary)">fifteen days</TextHighlight>{" "}
           works
-        </h2>
+        </Heading>
 
-        <p className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+        <Lead className="mt-6 max-w-2xl">
           Four steps. We run them again the moment we’re done.
-        </p>
+        </Lead>
 
         <LoopSteps />
       </div>

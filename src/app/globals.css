@@ -254,3 +254,29 @@
   animation: none;
   mix-blend-mode: normal;
 }
+
+/* ── Wensity primitive tokens ───────────────────────────────────────────
+   Only the handful the typography primitives actually read, each derived
+   from the theme tokens above so light/dark follow automatically.
+
+   Deliberately NOT the block `wensity add` appends: that one redefines
+   --background, --foreground, --muted, --muted-foreground and --border with
+   its own zinc palette, and being later in the file it would win over the
+   theme. If you re-run a wensity generator, drop its base-token block. */
+:root {
+  --primitive-font-sans: var(--font-sans);
+  --primitive-font-display: var(--font-heading);
+  --primitive-font-mono: var(--font-mono);
+
+  --primitive-text-secondary: color-mix(in oklab, var(--foreground) 72%, transparent);
+  --primitive-border-subtle: color-mix(in oklab, var(--border) 60%, transparent);
+
+  --primitive-radius-surface: var(--radius-xl);
+  --primitive-radius-control-sm: var(--radius-sm);
+}
+
+@layer base {
+  :where([data-wensity-primitive]) {
+    font-family: var(--primitive-font-sans);
+  }
+}
